@@ -1,0 +1,71 @@
+default_stages: [commit, push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+        files: '\.py$'
+      - id: trailing-whitespace
+        files: '\.py$'
+
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        args: ["--skip-string-normalization", "--line-length", "100"]
+        files: '\.py$'
+
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        files: '\.py$'
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.17.1
+    hooks:
+      - id: mypy
+        args:
+          [
+            "--explicit-package-bases",
+            "--ignore-missing-imports",
+            "--disallow-untyped-defs",
+            "--check-untyped-defs",
+            "--disallow-untyped-calls",
+            "--disallow-untyped-decorators",
+            "--strict-optional",
+            "--warn-unused-ignores",
+            "--disable-error-code=ignore-without-code",
+            "--disable-error-code=truthy-bool",
+            "--disable-error-code=assignment",
+            "--disable-error-code=attr-defined",
+            "--disable-error-code=no-untyped-call",
+            "--disable-error-code=operator",
+            "--disable-error-code=var-annotated",
+            "--disable-error-code=index",
+            "--disable-error-code=call-overload",
+            "--disable-error-code=union-attr",
+            "--disable-error-code=import-untyped",
+            "--disable-error-code=arg-type",
+            "--disable-error-code=dict-item",
+            "--disable-error-code=misc",
+            "--disable-error-code=no-redef",
+            "--disable-error-code=list-item",
+          ]
+        additional_dependencies:
+          - mypy_extensions
+        exclude: "(.*/docs/.*|.*/tests/.*|.*deprecated/.*|.*/doc/.*|.*performance_testing/.*)"
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.32.0
+    hooks:
+      - id: yamllint
+        args:
+          - --config-data
+          - |
+            extends: default
+            rules:
+              document-start: disable
+              line-length: disable
